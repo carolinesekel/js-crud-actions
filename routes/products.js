@@ -43,6 +43,7 @@ module.exports = function (db) {
         "orange",
         "black",
         "brown",
+        "green",
         "",
         null,
         undefined,
