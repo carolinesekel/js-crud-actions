@@ -19,7 +19,7 @@ document.getElementById("submit").onclick = function () {
     description: formData.get("description"),
   };
 
-  const updatedFileds = _.omitBy(newData, function (v, k) {
+  const updatedFields = _.omitBy(newData, function (v, k) {
     return k === "id" || currentProduct[k] == v;
   });
 
