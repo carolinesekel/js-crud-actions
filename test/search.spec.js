@@ -5,6 +5,9 @@ let chai = require('chai');
 chai.should();
 let sinon = require('sinon');
 let httpMocks = require('node-mocks-http');
+var express = require("express");
+var router = express.Router();
+const qs = require("qs");
 
 //THE PLAN
 //mock database
@@ -34,21 +37,33 @@ let httpMocks = require('node-mocks-http');
         "description": "keeps ur noggin warm",
         "color": "blue",
         "id": "338d1f57-9b78-4b4a-9a3f-534c850f116c"
+      },
+      {
+        "name": "sandals",
+        "price": "12.99",
+        "quantity": "2",
+        "description": "swag feet covers",
+        "color": "orange",
+        "id": "338d1f57-9b78-5b4a-5a3f-534c850f116c"
       }
     ]
   }
 
-  let getResult = function(){
-    router.route("/products/search").get((req, res) => {
+  function getResult(req, res){
+    console.log("we're in");
+    //router.route("/products/search").get((req, res) => {
       const keywords = req.query.keywords.split(" ");
-      const result = db.get("products").filter((_) => {
+      console.log(keywords);
+      const result = db["products"].filter((_) => {
         const fullText = _.description + _.name + _.color;
-  
+        console.log(fullText);
         return keywords.every((_) => fullText.indexOf(_) !== -1);
       });
-  
+      
       res.send(result);
-    });
+      //return result;
+    //}
+    //);
   }
   //in the it(should) 
   //let result = getResult(req, res);
@@ -65,25 +80,50 @@ describe("Search functionality", function(){
     it("Should return product when the product name does exist",function(){
       //this.skip();
 
-      let req = httpMocks.createRequest({
-        query: {
-          keywords:'Essential'
-        }
-      }
-      );
+      let req = httpMocks.createRequest();
+      req.query.keywords = "Essential";
       let res = httpMocks.createResponse(); 
-      let result = getResult();
-      
+      //getResult.bind(req, res);
+      getResult(req, res); 
+      console.log('Result:');
+      //console.log(result._getData());
+      let returnedProductList = res._getData();
+      console.log(returnedProductList);
+      //breaks
+      //expect(hope[0]).to.include({'name': 'Essentials Backpacks'});
+      expect(returnedProductList[0]).to.include({'name': 'Essential Backpack'});
     });
       
 
 
-    it("Should return nothing when the product Id does not exist", function(){
-      this.skip();
+    it("Should return nothing when the product name does not exist", function(){
+      let req = httpMocks.createRequest();
+      req.query.keywords = "cat";
+      let res = httpMocks.createResponse(); 
+      //getResult.bind(req, res);
+      getResult(req, res); 
+      console.log('Result:');
+      //console.log(result._getData());
+      let returnedProductList = res._getData();
+      console.log(returnedProductList);
+      //breaks
+      //expect(hope[0]).to.include({'name': 'Essentials Backpacks'});
+      expect(returnedProductList[0]).to.include({});
 
     })
     it("Should return matching products when just color is given", function(){
-      this.skip();
+      let req = httpMocks.createRequest();
+      req.query.keywords = "orange";
+      let res = httpMocks.createResponse(); 
+      //getResult.bind(req, res);
+      getResult(req, res); 
+      console.log('Result:');
+      //console.log(result._getData());
+      let returnedProductList = res._getData();
+      console.log(returnedProductList);
+      //breaks
+      expect(returnedProductList[0]).to.include({'name': 'Essential Backpack'});
+      expect(returnedProductList[1]).to.include({'name': 'sandals'});
 
     })
     it("Should return matching products when just price is given", function(){
