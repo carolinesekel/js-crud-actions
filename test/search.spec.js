@@ -127,7 +127,7 @@ describe("Search functionality", function(){
 
     })
     it("Should return matching products when just price is given", function(){
-      this.skip();
+      expect(true).to.be.false;
 
     })
     it("Should return nothing when no producuts match provided color", function(){
