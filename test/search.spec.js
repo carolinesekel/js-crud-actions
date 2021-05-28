@@ -14,12 +14,7 @@ const qs = require("qs");
 //call search functionality 
 //expect ...
 
-/*describe("See if mocha works", function(){
-    it("should log hi", function (){
-        console.log("hi");
-    })
-})*/
-
+//copy of producta database, separate from actual dtabase for testing 
  let db = {
     "products": [
       {
@@ -49,46 +44,49 @@ const qs = require("qs");
     ]
   }
 
+//search functionality from products.js, copied here and wrappted in a function 
+//separated the actual search functionality from inside the router.route...
+//needed to mock the router a different way? 
+//how would we have mocked the router.route, because I doubt just commenting the lines out was the right thing to do 
+//how would we have accessed this code from the ther file if it was not exported as a module or anything? 
+//or is that something we would have had to refactor 
+
+//req and res are mocked inside the test
   function getResult(req, res){
-    console.log("we're in");
+    //check if inside the function 
+    //console.log("we're in");
+
     //router.route("/products/search").get((req, res) => {
+
+      //keywords is set inside the mock, hardcoded with what we want to test in each case
       const keywords = req.query.keywords.split(" ");
-      console.log(keywords);
+      //console.log(keywords);
+      /*this line was changed to just access the mock databse object above, using correct mocking 
+      of router might have allowed us to keep this line the same*/
       const result = db["products"].filter((_) => {
         const fullText = _.description + _.name + _.color;
-        console.log(fullText);
+        //console.log(fullText);
         return keywords.every((_) => fullText.indexOf(_) !== -1);
       });
       
       res.send(result);
-      //return result;
+
     //}
     //);
   }
-  //in the it(should) 
-  //let result = getResult(req, res);
-  //assert result to what we want
-  
 
 describe("Search functionality", function(){
-    
 
-    /*it("Should return true", function(){
-        
-        expect(mockDB.products[0]).to.have.property("color");
-    })*/
     it("Should return product when the product name does exist",function(){
-      //this.skip();
-
       let req = httpMocks.createRequest();
       req.query.keywords = "Essential";
       let res = httpMocks.createResponse(); 
       //getResult.bind(req, res);
       getResult(req, res); 
-      console.log('Result:');
+      //console.log('Result:');
       //console.log(result._getData());
       let returnedProductList = res._getData();
-      console.log(returnedProductList);
+      //console.log(returnedProductList);
       //breaks
       //expect(hope[0]).to.include({'name': 'Essentials Backpacks'});
       expect(returnedProductList[0]).to.include({'name': 'Essential Backpack'});
@@ -102,10 +100,10 @@ describe("Search functionality", function(){
       let res = httpMocks.createResponse(); 
       //getResult.bind(req, res);
       getResult(req, res); 
-      console.log('Result:');
+      //console.log('Result:');
       //console.log(result._getData());
       let returnedProductList = res._getData();
-      console.log(returnedProductList);
+      //console.log(returnedProductList);
       //breaks
       //expect(hope[0]).to.include({'name': 'Essentials Backpacks'});
       expect(returnedProductList[0]).to.include({});
@@ -117,16 +115,17 @@ describe("Search functionality", function(){
       let res = httpMocks.createResponse(); 
       //getResult.bind(req, res);
       getResult(req, res); 
-      console.log('Result:');
+      //console.log('Result:');
       //console.log(result._getData());
       let returnedProductList = res._getData();
-      console.log(returnedProductList);
+     // console.log(returnedProductList);
       //breaks
       expect(returnedProductList[0]).to.include({'name': 'Essential Backpack'});
       expect(returnedProductList[1]).to.include({'name': 'sandals'});
 
     })
     it("Should return matching products when just price is given", function(){
+      this.skip();
       expect(true).to.be.false;
 
     })
